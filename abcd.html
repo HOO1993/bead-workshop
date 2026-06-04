@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>🎀 圆形珠串 · 颜色规律工坊</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f3e9f0 0%, #f5e6ed 100%);
+            font-family: 'Segoe UI', 'Quicksand', 'Poppins', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        /* 主卡片 - 干净圆润 */
+        .cute-card {
+            max-width: 800px;
+            width: 100%;
+            background: #fffdf9;
+            border-radius: 2.5rem;
+            box-shadow: 0 20px 35px -10px rgba(120, 70, 90, 0.2);
+            overflow: hidden;
+            transition: all 0.2s ease;
+            border: 1px solid #ffe2ec;
+        }
+
+        /* 头部简洁 */
+        .header {
+            padding: 1.5rem 2rem 0.8rem 2rem;
+            text-align: center;
+            background: #ffffffc9;
+        }
+
+        .header h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(120deg, #d47b9b, #b55c7c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.2px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1:before {
+            content: "🍡";
+            font-size: 1.8rem;
+            background: none;
+            color: #e596b2;
+        }
+
+        .sub {
+            color: #ba8197;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            font-weight: 500;
+        }
+
+        /* 控制区域 简洁干净 */
+        .control {
+            padding: 0.8rem 2rem 1.5rem 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
+            background: #fffbf8;
+        }
+
+        .input-box {
+            flex: 2;
+            min-width: 180px;
+        }
+
+        .input-box label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #cf829e;
+            margin-bottom: 0.3rem;
+            letter-spacing: 0.5px;
+        }
+
+        #patternInput {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            border: 2px solid #ffe0e8;
+            border-radius: 2rem;
+            background: white;
+            font-family: monospace;
+            outline: none;
+            transition: 0.2s;
+            color: #42313a;
+        }
+
+        #patternInput:focus {
+            border-color: #eba2bc;
+            box-shadow: 0 0 0 3px rgba(235, 162, 188, 0.2);
+        }
+
+        .slider-box {
+            flex: 1;
+            min-width: 160px;
+            background: #fff7f2;
+            padding: 0.2rem 1rem;
+            border-radius: 2rem;
+            border: 1px solid #ffe0e0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slider-box span {
+            font-weight: 700;
+            color: #cf7a98;
+            font-size: 0.85rem;
+        }
+
+        #beadCount {
+            flex: 1;
+            height: 5px;
+            -webkit-appearance: none;
+            background: #ffcdd8;
+            border-radius: 10px;
+        }
+
+        #beadCount:focus {
+            outline: none;
+        }
+
+        #beadCount::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #e998b2;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        #countValue {
+            font-weight: 800;
+            background: #ffeef3;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            min-width: 40px;
+            text-align: center;
+            color: #b6577a;
+            font-size: 0.85rem;
+        }
+
+        .btn-magic {
+            background: #ffb7cb;
+            border: none;
+            padding: 0.65rem 1.6rem;
+            border-radius: 3rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.15s;
+            color: #442c36;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 0 #c27f9a;
+            transform: translateY(-1px);
+        }
+
+        .btn-magic:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #c27f9a;
+        }
+
+        /* 圆形手链舞台 */
+        .bracelet-stage {
+            padding: 1rem 1rem 1.8rem 1rem;
+            background: #fffaf2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .canvas-wrapper {
+            background: #fff1e8;
+            border-radius: 50%;
+            padding: 0.8rem;
+            display: inline-block;
+            box-shadow: inset 0 0 0 4px white, 0 12px 24px -10px rgba(0,0,0,0.15);
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 50%;
+            background: #fce9df;
+            box-shadow: 0 6px 14px rgba(90, 50, 60, 0.1);
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+        }
+
+        /* 规律提示 简洁 */
+        .rule-tip {
+            text-align: center;
+            margin: 0.2rem 1.5rem 1rem 1.5rem;
+            padding: 0.5rem 0.8rem;
+            background: #fff5ef;
+            border-radius: 3rem;
+            font-size: 0.75rem;
+            color: #bc7b93;
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .rule-tip span:first-child {
+            font-weight: 700;
+        }
+
+        #rulePreview {
+            background: #ffefe5;
+            padding: 0.2rem 0.9rem;
+            border-radius: 2rem;
+            font-family: monospace;
+            font-weight: 600;
+            color: #a95c7a;
+        }
+
+        footer {
+            font-size: 0.65rem;
+            text-align: center;
+            padding: 1rem;
+            background: #fff2f5;
+            color: #b57b8f;
+            border-top: 1px solid #ffe4ec;
+        }
+
+        @media (max-width: 580px) {
+            body {
+                padding: 0.8rem;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .control {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-magic {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="cute-card">
+    <div class="header">
+        <h1>圆形珠串手链</h1>
+        <div class="sub">✨ 输入颜色规律 · 自动串成可爱圆环 ✨</div>
+    </div>
+
+    <div class="control">
+        <div class="input-box">
+            <label>🎨 颜色规律 (用逗号分隔)</label>
+            <input type="text" id="patternInput" placeholder="例: 红, 蓝, 黄, 绿  或  #FFC0CB, 粉, 紫" value="🍎 红, 💙 蓝, 🌻 黄, 🍃 绿">
+        </div>
+        <div class="slider-box">
+            <span>📿 珠子数量</span>
+            <input type="range" id="beadCount" min="1" max="48" value="24" step="1">
+            <span id="countValue">24</span>
+        </div>
+        <button id="generateBtn" class="btn-magic">✨ 绕成圆串 ✨</button>
+    </div>
+
+    <!-- 圆形珠串画布 -->
+    <div class="bracelet-stage">
+        <div class="canvas-wrapper">
+            <canvas id="braceletCanvas" width="480" height="480" style="width:100%; max-width:480px; height:auto; aspect-ratio:1/1">
+                您的浏览器不支持可爱的圆形手链~
+            </canvas>
+        </div>
+    </div>
+
+    <div class="rule-tip">
+        <span>🔮 当前规律循环 →</span>
+        <span id="rulePreview">红, 蓝, 黄, 绿</span>
+        <span>(自动重复串珠)</span>
+    </div>
+    <footer>
+        🧸 支持中文颜色名 / 英文 / 十六进制 (#RGB) | 不认识的颜色会变成软绵绵灰珠
+    </footer>
+</div>
+
+<script>
+    // ---------- 颜色魔法词典 ----------
+    const colorMap = new Map([
+        ["红", "red"], ["红色", "red"],
+        ["蓝", "blue"], ["蓝色", "blue"],
+        ["黄", "yellow"], ["黄色", "yellow"],
+        ["绿", "green"], ["绿色", "green"],
+        ["橙", "orange"], ["橙色", "orange"], ["橘", "orange"],
+        ["紫", "purple"], ["紫色", "purple"],
+        ["粉", "pink"], ["粉色", "pink"], ["粉红", "pink"],
+        ["青", "cyan"], ["青色", "cyan"],
+        ["棕", "brown"], ["棕色", "brown"],
+        ["黑", "black"], ["黑色", "black"],
+        ["白", "white"], ["白色", "white"],
+        ["灰", "gray"], ["灰色", "gray"],
+        ["品红", "magenta"], ["洋红", "magenta"],
+        ["浅蓝", "lightblue"], ["天蓝", "skyblue"], ["深蓝", "darkblue"],
+        ["浅绿", "lightgreen"], ["草绿", "limegreen"],
+        ["金黄", "gold"], ["金色", "gold"],
+        ["玫红", "deeppink"], ["珊瑚", "coral"], ["薰衣草", "lavender"]
+    ]);
+
+    // 标准CSS颜色名称
+    const cssColorSet = new Set([
+        "aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue",
+        "blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk",
+        "crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkgrey","darkkhaki",
+        "darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue",
+        "darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick",
+        "floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow",
+        "honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon",
+        "lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgray","lightgreen","lightgrey","lightpink",
+        "lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen",
+        "linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen",
+        "mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose",
+        "moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod",
+        "palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple",
+        "rebeccapurple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna",
+        "silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato",
+        "turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen"
+    ]);
+
+    const hexRegex = /^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/;
+
+    // 辅助: 去除颜文字和表情符号
+    function stripEmojis(str) {
+        return str.replace(/[\u{1F300}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}]/gu, '').trim();
+    }
+
+    // 将单个颜色token标准化为CSS颜色值 (无效返回null)
+    function normalizeColor(token) {
+        let raw = token.trim();
+        if (raw === "") return null;
+        let lower = raw.toLowerCase();
+
+        // 映射表
+        if (colorMap.has(raw)) return colorMap.get(raw);
+        if (colorMap.has(lower)) return colorMap.get(lower);
+
+        // 清除表情再试
+        let cleaned = stripEmojis(raw);
+        if (cleaned !== raw && cleaned !== "") {
+            if (colorMap.has(cleaned)) return colorMap.get(cleaned);
+            if (colorMap.has(cleaned.toLowerCase())) return colorMap.get(cleaned.toLowerCase());
+        }
+
+        // 十六进制
+        if (hexRegex.test(raw)) return raw;
+        if (cleaned !== raw && hexRegex.test(cleaned)) return cleaned;
+
+        // 标准CSS名称
+        if (cssColorSet.has(lower)) return lower;
+        if (cleaned !== raw && cssColorSet.has(cleaned.toLowerCase())) return cleaned.toLowerCase();
+
+        // 浏览器兜底检测 (例如 rgb(..) 或任意合法颜色字符串)
+        const testDiv = document.createElement("div");
+        testDiv.style.color = raw;
+        if (testDiv.style.color !== "") return raw;
+        if (cleaned !== raw) {
+            testDiv.style.color = cleaned;
+            if (testDiv.style.color !== "") return cleaned;
+        }
+        return null; // 无效颜色
+    }
+
+    // 解析用户输入的颜色规律字符串 -> 返回有效颜色数组(含null)
+    function parsePattern(patternStr) {
+        if (!patternStr || patternStr.trim() === "") return [];
+        let work = patternStr.replace(/，/g, ',').replace(/、/g, ',');
+        let segments = work.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        // 增强: 如果没有逗号但有空格，按空格拆分（适应小朋友忘记逗号）
+        if (segments.length === 1 && work.includes(' ') && !work.includes(',')) {
+            segments = work.split(/\s+/).filter(s => s.length > 0);
+        }
+        if (segments.length === 0) return [];
+
+        const result = [];
+        for (let seg of segments) {
+            // 如果片段内部还有空格但没有逗号，尝试再拆分（比如 "红 蓝 黄" 整体当作一个seg的情况)
+            if (!seg.includes(',') && seg.includes(' ') && !colorMap.has(seg) && !hexRegex.test(seg)) {
+                const subParts = seg.split(/\s+/).filter(p => p.length > 0);
+                for (let sub of subParts) {
+                    result.push(normalizeColor(sub));
+                }
+            } else {
+                result.push(normalizeColor(seg));
+            }
+        }
+        return result;
+    }
+
+    // 根据规律序列和总数生成实际珠子颜色列表 (规律循环)
+    function generateBeadColors(patternArray, totalCount) {
+        if (!patternArray || patternArray.length === 0) return [];
+        const beads = [];
+        for (let i = 0; i < totalCount; i++) {
+            beads.push(patternArray[i % patternArray.length]);
+        }
+        return beads;
+    }
+
+    // 在canvas上绘制圆形手链 (可爱风，带珠光)
+    function drawCircularBracelet(beadColors) {
+        const canvas = document.getElementById('braceletCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const size = canvas.width = canvas.height = 480;
+        ctx.clearRect(0, 0, size, size);
+
+        if (!beadColors || beadColors.length === 0) {
+            ctx.font = "18px 'Segoe UI', 'Quicksand'";
+            ctx.fillStyle = "#bc8f9f";
+            ctx.textAlign = "center";
+            ctx.fillText("✨ 输入颜色规律吧 ✨", size/2, size/2);
+            return;
+        }
+
+        const n = beadColors.length;
+        const centerX = size/2, centerY = size/2;
+        let circleRadius = 170;      // 圆环半径
+        // 动态适应: 当珠子很少时稍微减小半径，太多时微调但保持舒适
+        if (n <= 6) circleRadius = 150;
+        else if (n >= 30) circleRadius = 160;
+        
+        // 根据周长计算珠子直径，让珠子和圆环比例舒服
+        const perimeter = 2 * Math.PI * circleRadius;
+        let beadDiameter = Math.min(46, Math.max(24, perimeter / n * 0.82));
+        // 单个珠子时画在中心
+        if (n === 1) {
+            const colorVal = beadColors[0];
+            const fillColor = (colorVal && colorVal !== null) ? colorVal : "#E2CFC4";
+            drawSingleBead(ctx, centerX, centerY, beadDiameter, fillColor);
+            return;
+        }
+
+        // 绘制圆形手链上的所有珠子
+        for (let i = 0; i < n; i++) {
+            const angle = (i / n) * Math.PI * 2 - Math.PI / 2; // 从顶部开始顺时针
+            const x = centerX + circleRadius * Math.cos(angle);
+            const y = centerY + circleRadius * Math.sin(angle);
+            let colorToken = beadColors[i];
+            let isValid = (colorToken !== null && colorToken !== undefined);
+            let beadColor = isValid ? colorToken : "#D9C2B5";  // 温柔灰褐色
+            drawBead(ctx, x, y, beadDiameter, beadColor);
+        }
+
+        // 中心装饰小星星，更可爱
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 14, 0, 2 * Math.PI);
+        ctx.fillStyle = "#FFE2AC";
+        ctx.shadowBlur = 2;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 8, 0, 2 * Math.PI);
+        ctx.fillStyle = "#FFCE94";
+        ctx.fill();
+        ctx.font = "bold 18px 'Segoe UI', 'Quicksand'";
+        ctx.fillStyle = "#cc886a";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("🧸", centerX, centerY);
+        ctx.shadowBlur = 0;
+    }
+
+    // 绘制单颗立体珠子 (高光可爱)
+    function drawBead(ctx, x, y, diameter, color) {
+        const radius = diameter / 2;
+        ctx.save();
+        ctx.shadowBlur = 3;
+        ctx.shadowColor = "rgba(0,0,0,0.15)";
+        ctx.shadowOffsetX = 1;
+        ctx.shadowOffsetY = 1;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        // 高光1
+        ctx.beginPath();
+        ctx.arc(x - radius*0.15, y - radius*0.15, radius*0.2, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,250,240,0.7)";
+        ctx.fill();
+        // 高光2小光点
+        ctx.beginPath();
+        ctx.arc(x - radius*0.25, y - radius*0.25, radius*0.09, 0, Math.PI * 2);
+        ctx.fillStyle = "white";
+        ctx.fill();
+        // 底部暗部渐变 增加立体感
+        const grad = ctx.createLinearGradient(x - radius*0.3, y - radius*0.2, x + radius*0.3, y + radius*0.2);
+        grad.addColorStop(0, "rgba(255,255,240,0.3)");
+        grad.addColorStop(1, "rgba(0,0,0,0.1)");
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.restore();
+    }
+
+    // 单颗珠子中心绘制（n=1的情况）
+    function drawSingleBead(ctx, x, y, diameter, color) {
+        drawBead(ctx, x, y, diameter, color);
+        // 加一点小星星环绕
+        ctx.beginPath();
+        ctx.arc(x, y, diameter*0.75, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,240,210,0.2)";
+        ctx.fill();
+    }
+
+    // 更新规律预览文本
+    function updateRulePreview(patternArray) {
+        const previewSpan = document.getElementById('rulePreview');
+        if (!previewSpan) return;
+        if (!patternArray || patternArray.length === 0) {
+            previewSpan.innerText = "💫 等待魔法规律";
+            return;
+        }
+        let display = patternArray.map(p => (p === null || p === undefined) ? "❓" : p);
+        let previewText = display.join(", ");
+        if (previewText.length > 55) previewText = previewText.slice(0, 52) + "…";
+        previewSpan.innerText = previewText;
+    }
+
+    // 刷新全部: 从界面取值 -> 生成规律 -> 画圆形手链
+    let currentPatternArray = [];
+    function refreshBracelet() {
+        // 获取规律输入
+        const patternRaw = document.getElementById('patternInput').value;
+        // 获取珠子数量
+        const slider = document.getElementById('beadCount');
+        let total = parseInt(slider.value, 10);
+        if (isNaN(total)) total = 20;
+        total = Math.min(48, Math.max(1, total));
+        document.getElementById('countValue').innerText = total;
+        slider.value = total;
+
+        // 解析颜色规律
+        const parsed = parsePattern(patternRaw);
+        if (parsed.length === 0) {
+            // 没有有效颜色规律，清空画布显示提示
+            const canvas = document.getElementById('braceletCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "18px 'Segoe UI'";
+            ctx.fillStyle = "#b78497";
+            ctx.textAlign = "center";
+            ctx.fillText("🍬 输入颜色规律吧~", canvas.width/2, canvas.height/2);
+            updateRulePreview([]);
+            // 清除可能残留的无效提示
+            return;
+        }
+        currentPatternArray = parsed;
+        // 生成最终珠子颜色列表 (按规律循环)
+        const beadColorList = generateBeadColors(parsed, total);
+        // 绘制圆形手链
+        drawCircularBracelet(beadColorList);
+        // 更新规律预览
+        updateRulePreview(parsed);
+        
+        // 显示无效颜色数量的温和提示 (可选，不增加复杂，简单在footer显示临时提醒)
+        let invalidCount = beadColorList.filter(c => c === null || c === undefined).length;
+        const footerSpan = document.querySelector('footer');
+        let warnMsg = footerSpan.querySelector('.invalid-tip');
+        if (invalidCount > 0) {
+            if (!warnMsg) {
+                warnMsg = document.createElement('span');
+                warnMsg.className = 'invalid-tip';
+                warnMsg.style.marginLeft = '12px';
+                warnMsg.style.background = '#fff1ec';
+                warnMsg.style.padding = '0 8px';
+                warnMsg.style.borderRadius = '30px';
+                warnMsg.style.fontSize = '0.65rem';
+                warnMsg.style.color = '#c2766b';
+                footerSpan.appendChild(warnMsg);
+            }
+            warnMsg.innerText = `⚠️ ${invalidCount} 颗小灰珠 (未识别颜色)`;
+        } else {
+            if (warnMsg) warnMsg.remove();
+        }
+    }
+
+    // 绑定UI事件
+    function bindEvents() {
+        const slider = document.getElementById('beadCount');
+        const generateBtn = document.getElementById('generateBtn');
+        const patternInput = document.getElementById('patternInput');
+
+        slider.addEventListener('input', () => {
+            refreshBracelet();
+        });
+        generateBtn.addEventListener('click', () => {
+            refreshBracelet();
+        });
+        // 输入框防抖自动生成，体验更流畅
+        let debounce;
+        patternInput.addEventListener('input', () => {
+            clearTimeout(debounce);
+            debounce = setTimeout(() => {
+                refreshBracelet();
+            }, 180);
+        });
+    }
+
+    // 初始化默认显示 (默认值已经在input中设置好)
+    function init() {
+        bindEvents();
+        refreshBracelet();  // 根据默认规律生成圆形手链
+    }
+
+    init();
+</script>
+</body>
+</html>
